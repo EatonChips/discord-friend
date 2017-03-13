@@ -3,7 +3,7 @@ A friend you can have on Discord, because you have no friends.
 
 ## Installation
 
-If you just want to add discord-friend to your server: {insert link here later}
+If you just want to add discord-friend to your server: [Click This](https://discordapp.com/oauth2/authorize?client_id=281870745611665408&scope=bot&permissions=0)
 
 But if you want to host the bot yourself, [Download and install NodeJS](https://nodejs.org/en/download/current/)
 
