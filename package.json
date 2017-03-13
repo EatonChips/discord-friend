@@ -10,6 +10,8 @@
   "author": "Adam Eaton",
   "license": "ISC",
   "dependencies": {
+    "cleverbot-api-node": "0.0.4",
+    "cleverbot-node": "^0.3.5",
     "cleverbot.io": "^1.0.4",
     "discord.js": "^11.0.0"
   }

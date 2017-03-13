@@ -1,79 +1,84 @@
-const Cleverbot = require('cleverbot.io');
+const Cleverbot = require('cleverbot-api-node');
+const _ = require('lodash');
 const Discord = require('discord.js');
 const commands = require('./commands.js');
+const config = require('./config.js');
 
 // Command prefix
 const prefix = '!f';
 
+// Global cleverbot instances
+let cleverBots = {};
+
 // Authorize Discord Bot
 let discordClient = new Discord.Client();
-const discordToken = 'MjgxODcwNzQ1NjExNjY1NDA4.C4eQLQ.dJhPeFaCbr-plBBEDVQwX06qM_M';
-
+const discordToken = config.DBOT_KEY;
 discordClient.login(discordToken);
 
 // Authorize Cleverbot Client
-let cleverBot = new Cleverbot('1L584wc2C7F7vTHa', '5nCmXTdIZjgXymov3Xyg4fbKEEQxGqMz');
-cleverBot.setNick('discord-friend');
+let key = process.env.CLEVERBOT_KEY || config.CBOT_KEY;
 
 // When Discord Bot Connects to Servers
 discordClient.on('ready', function() {
-    console.log('Discord Session: Connected');
+    console.log('======== Connections ========');
+    discordClient.guilds.forEach(guild => {         // Print server ids
+        console.log('Guild id: ' + guild.id);
+    });
 });
 
 // When message is sent to chat
 discordClient.on('message', (message) => {
-    if (message.content == 'ping') {
-        message.channel.sendMessage('pong');
-    }
-
-    // Check if message is a command
-    if (message.content.includes(prefix)) {
-        switch (message) {
-            case prefix + ' help': 
-                commands.help.exec(message);
-                return;
-            case prefix + ' start':
-                commands.start.exec(message, cleverBot);
-                return;
-            default:
-                commands.help.exec(message);
-                return;
+    // Message is not from Discord-friend
+    if (!(message.author.id === discordClient.user.id)) {
+        // Ping pong example
+        if (message.content == 'ping') {
+            message.channel.sendMessage('pong');
         }
+
+        // Check if message is a command
+        if (message.content.includes(prefix)) {
+            switch (message.content) {
+                case prefix + ' help':                                      // User wants help
+                    commands.help.exec(message);                            // Display commands
+                    return;
+            case prefix + ' start':                                         // User starts conversation
+                    cleverBots = commands.start.exec(message, cleverBots);       // Run start command
+                    return;
+                case prefix + ' stop':                                      // User stops conversation
+                    cleverBots = commands.stop.exec(message, cleverBots);                // Run stop command
+                    return;
+                default:
+                    var channelID = message.channel.id;                     // Get channel ID
+                    if (cleverBots[channelID] === undefined) {              // If user has not started conversation
+                    commands.help.exec(message);                            // Display commands
+                    } else if (message.author.id === cleverBots[channelID].user){
+                        console.log(message.content.slice(prefix.length));
+                        cleverBots[channelID].bot.request(message.content.slice(prefix.length)).then(function(res) {
+                                message.channel.sendMessage(res.output);
+                            }).catch(function(err) {
+                                console.error(err);
+                        });
+                    }
+                    return;
+            }
+        }
+        var channelID = message.channel.id;
+        if (message.author.id === cleverBots[channelID].userID) {
+            interact(message, cleverBots);
+        }
+
+    } else {
+        // Discord-friend Response
     }
-        
-    // if (e.message.author.id == discordClient.User.id) return;
-    // //console.log(e.message.author.id);
-    // cleverBot.ask(e.message.content, function(err, response) {
-    //     e.message.channel.sendMessage(response);
-    // });
 });
 
-cleverBot.create(function(err, session) {
-    if (err) {
-        console.log(err)
-    }
-    console.log('Cleverbot Session: ' + session);
-});
-
-// discordClient.on('ready', function() {
-//     console.log('Discord Bot: ' + discordClient.username + " - (" + discordClient.id + ")");
-// });
- 
-
-// cleverBot.create(function (err, session) {
-//     if (err) {
-//         console.log(err);
-//     } 
-//     console.log('Cleverbot Session: ' + session);
-//     discordClient.on('message', function(user, userID, channelID, message, event) {
-//         console.log(discordClient);
-//         if (userID == discordClient.user.id) return;
-//         cleverBot.ask(message, function(err, response) {
-//             discordClient.sendMessage({
-//                 to: channelID,
-//                 message: response
-//             });
-//         });
-//     });
-
-// });
+function interact(message, cleverbots) {
+    let channelID = message.channel.id;
+    console.log('HUMAN: ' + message.content);
+    cleverBots[channelID].bot.request(message.content).then((res => {
+        message.channel.sendMessage(res.output);
+        console.log('BOT: ' + res.output)
+    })).catch((err) => {
+        console.error(err);
+    })
+}
