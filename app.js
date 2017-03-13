@@ -65,12 +65,20 @@ discordClient.on('message', (message) => {
 function interact(message, cleverbots) {
     // Get channel id
     let channelID = message.channel.id;   
-    console.log('HUMAN: ' + message.content);
+
+    // Make bot 'type'
+    // discordClient.startTyping(message.channel, err => {
+    //     console.log(err);
+    // });
+
     // Query cleverbot api
     cleverBots[channelID].bot.request(message.content).then((res => {
         // Send response to chat
         message.channel.sendMessage(res.output);
-        console.log('BOT: ' + res.output)
+        // Make bot stop 'typing'
+        // discordClient.stopTyping(message.channel, err => {
+        //     console.log(err);
+        // });
     })).catch((err) => {
         console.error(err);
     })
