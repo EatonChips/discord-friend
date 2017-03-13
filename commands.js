@@ -49,6 +49,12 @@ commands = {
             }
             return _.omit(cBots, channelID);       // Remove cleverbot instance
         }
+    },
+    ping: {
+        desc: 'Responds with pong',
+        exec: function(message) {
+            message.channel.sendMessage('Pong');
+        }
     }
 }
 

@@ -3,7 +3,7 @@ const commands = require('./commands.js');
 const config = require('./config.js');
 
 // Command prefix
-const prefix = '!f';
+const prefix = '!f ';
 
 // Global cleverbot instances
 let cleverBots = {};
@@ -28,22 +28,21 @@ discordClient.on('ready', function() {
 discordClient.on('message', (message) => {
     // Message is not from Discord-friend
     if (!(message.author.id === discordClient.user.id)) {
-        // Ping pong example
-        if (message.content == 'ping') {
-            message.channel.sendMessage('pong');
-        }
 
         // Check if message is a command
         if (message.content.includes(prefix)) {
             switch (message.content) {
-                case prefix + ' help':                                      // User wants help
+                case prefix + 'help':                                       // User wants help
                     commands.help.exec(message);                            // Display commands
                     return;
-            case prefix + ' start':                                         // User starts conversation
+                case prefix + 'start':                                      // User starts conversation
                     cleverBots = commands.start.exec(message, cleverBots);  // Run start command
                     return;
-                case prefix + ' stop':                                      // User stops conversation
+                case prefix + 'stop':                                       // User stops conversation
                     cleverBots = commands.stop.exec(message, cleverBots);   // Run stop command
+                    return;
+                case prefix + 'ping':
+                    commands.ping.exec(message);                            // Run ping/pong command
                     return;
                 default:                                                    // User typed in wrong command
                     commands.help.exec(message);                            // Display commands
