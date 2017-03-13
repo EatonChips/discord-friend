@@ -4,11 +4,12 @@
   "description": "A friend you can have on discord, because you have no friends.",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon app.js",
+    "dev": "nodemon app.js",
+    "start": "node app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Adam Eaton",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
     "cleverbot-api-node": "0.0.4",
     "discord.js": "^11.0.0",
