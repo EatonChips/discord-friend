@@ -11,7 +11,7 @@ Once downloaded, enter the following command to install node modules:
 
 ```npm install```
 
-After the node modules install open config.js and replace <CLEVERBOT_API_KEY> and <DISCORD_API_TOKEN> with tokens that can be obtained here: [Cleverbot](https://www.cleverbot.com/api/my-account/) [Discord](https://discordapp.com/developers/applications/me)
+After the node modules install open config.js and replace \<CLEVERBOT_API_KEY\> and \<DISCORD_API_TOKEN\> with tokens that can be obtained here: [Cleverbot](https://www.cleverbot.com/api/my-account/) [Discord](https://discordapp.com/developers/applications/me)
 
 Once you setup the api keys, run:
 
