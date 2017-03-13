@@ -23,10 +23,15 @@ commands = {
         desc: 'Starts a discussion.',
         exec: function(message, cBots) {
             let channelID = message.channel.id;                     // Get channel ID
-            cBots[channelID] = {};
-            cBots[channelID].bot = new Cleverbot(config.CBOT_KEY);  // Save cleverbot instance with channelID key value
-            cBots[channelID].userID = message.author.id;            // Save user who started cleverbot Instance
-            message.channel.sendMessage('Hello friend, ' + message.author);
+            // If this channel is already being used
+            if (!cBots[channelID]) {
+                cBots[channelID] = {};
+                cBots[channelID].bot = new Cleverbot(config.CBOT_KEY);  // Save cleverbot instance with channelID key value
+                cBots[channelID].user = message.author;                 // Save user who started cleverbot Instance
+                message.channel.sendMessage('Hello friend, ' + message.author);
+            } else {
+                message.channel.sendMessage(cBots[channelID].user + ' is using the friend.');
+            }
             return cBots;                                           // Return updated global cleverBot instances
         }
     },
@@ -37,6 +42,8 @@ commands = {
             let channelID = message.channel.id;    // Get channel ID
             if (cBots[channelID] === undefined) {  // If conversation not started
                 message.channel.sendMessage('Conversation not started');
+            } else if (message.author.id != cBots[channelID].user.id) {     // If another user tries to stop interaction
+                message.channel.sendMessage(cBots[channelID].user + ' is using the friend.');
             } else {
                 message.channel.sendMessage('Goodbye friend, ' + message.author);
             }

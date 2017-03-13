@@ -1,5 +1,3 @@
-const Cleverbot = require('cleverbot-api-node');
-const _ = require('lodash');
 const Discord = require('discord.js');
 const commands = require('./commands.js');
 const config = require('./config.js');
@@ -42,28 +40,20 @@ discordClient.on('message', (message) => {
                     commands.help.exec(message);                            // Display commands
                     return;
             case prefix + ' start':                                         // User starts conversation
-                    cleverBots = commands.start.exec(message, cleverBots);       // Run start command
+                    cleverBots = commands.start.exec(message, cleverBots);  // Run start command
                     return;
                 case prefix + ' stop':                                      // User stops conversation
-                    cleverBots = commands.stop.exec(message, cleverBots);                // Run stop command
+                    cleverBots = commands.stop.exec(message, cleverBots);   // Run stop command
                     return;
-                default:
-                    var channelID = message.channel.id;                     // Get channel ID
-                    if (cleverBots[channelID] === undefined) {              // If user has not started conversation
+                default:                                                    // User typed in wrong command
                     commands.help.exec(message);                            // Display commands
-                    } else if (message.author.id === cleverBots[channelID].user){
-                        console.log(message.content.slice(prefix.length));
-                        cleverBots[channelID].bot.request(message.content.slice(prefix.length)).then(function(res) {
-                                message.channel.sendMessage(res.output);
-                            }).catch(function(err) {
-                                console.error(err);
-                        });
-                    }
                     return;
             }
         }
+
         var channelID = message.channel.id;
-        if (message.author.id === cleverBots[channelID].userID) {
+        // If user using bot messages channel
+        if (cleverBots[channelID] != undefined && message.author === cleverBots[channelID].user) {
             interact(message, cleverBots);
         }
 
@@ -73,9 +63,12 @@ discordClient.on('message', (message) => {
 });
 
 function interact(message, cleverbots) {
-    let channelID = message.channel.id;
+    // Get channel id
+    let channelID = message.channel.id;   
     console.log('HUMAN: ' + message.content);
+    // Query cleverbot api
     cleverBots[channelID].bot.request(message.content).then((res => {
+        // Send response to chat
         message.channel.sendMessage(res.output);
         console.log('BOT: ' + res.output)
     })).catch((err) => {
