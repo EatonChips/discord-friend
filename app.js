@@ -9,7 +9,7 @@ const prefix = '!f';
 let cleverBots = {};
 
 // Authorize Discord Bot
-let discordClient = new Discord.Client();
+var discordClient = new Discord.Client();
 const discordToken = config.DBOT_KEY;
 discordClient.login(discordToken);
 
@@ -67,18 +67,14 @@ function interact(message, cleverbots) {
     let channelID = message.channel.id;   
 
     // Make bot 'type'
-    // discordClient.startTyping(message.channel, err => {
-    //     console.log(err);
-    // });
+    message.channel.startTyping();
 
     // Query cleverbot api
     cleverBots[channelID].bot.request(message.content).then((res => {
         // Send response to chat
         message.channel.sendMessage(res.output);
         // Make bot stop 'typing'
-        // discordClient.stopTyping(message.channel, err => {
-        //     console.log(err);
-        // });
+        message.channel.stopTyping();
     })).catch((err) => {
         console.error(err);
     })
