@@ -11,7 +11,7 @@ commands = {
             // Build help menu from command descriptions
             let helpMenu = '```'
             commandKeys.forEach(commandKey => {
-                helpMenu += commandKey + ' - ' + commands[commandKey].desc + '\n';
+                helpMenu += config.prefix + ' ' + commandKey + ' - ' + commands[commandKey].desc + '\n';
             });
             helpMenu += '```';
             // Send help menu to channel
