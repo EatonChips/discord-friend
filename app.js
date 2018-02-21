@@ -71,7 +71,7 @@ function interact(message, cleverbots) {
     // Query cleverbot api
     cleverBots[channelID].bot.request(message.content).then((res => {
         // Send response to chat
-        message.channel.sendMessage(res.output);
+        message.channel.send(res.output);
         // Make bot stop 'typing'
         message.channel.stopTyping();
     })).catch((err) => {

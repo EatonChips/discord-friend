@@ -15,7 +15,7 @@ commands = {
             });
             helpMenu += '```';
             // Send help menu to channel
-            message.channel.sendMessage(helpMenu);
+            message.channel.send(helpMenu);
         }
     },
     // Starts instance of cleverbot
@@ -28,9 +28,9 @@ commands = {
                 cBots[channelID] = {};
                 cBots[channelID].bot = new Cleverbot(config.CBOT_KEY);  // Save cleverbot instance with channelID key value
                 cBots[channelID].user = message.author;                 // Save user who started cleverbot Instance
-                message.channel.sendMessage('Hello friend, ' + message.author);
+                message.channel.send('Hello friend, ' + message.author);
             } else {
-                message.channel.sendMessage(cBots[channelID].user + ' is using the friend.');
+                message.channel.send(cBots[channelID].user + ' is using the friend.');
             }
             return cBots;                                           // Return updated global cleverBot instances
         }
@@ -41,11 +41,11 @@ commands = {
         exec: function(message, cBots) {
             let channelID = message.channel.id;    // Get channel ID
             if (cBots[channelID] === undefined) {  // If conversation not started
-                message.channel.sendMessage('Conversation not started');
+                message.channel.send('Conversation not started');
             } else if (message.author.id != cBots[channelID].user.id) {     // If another user tries to stop interaction
-                message.channel.sendMessage(cBots[channelID].user + ' is using the friend.');
+                message.channel.send(cBots[channelID].user + ' is using the friend.');
             } else {
-                message.channel.sendMessage('Goodbye friend, ' + message.author);
+                message.channel.send('Goodbye friend, ' + message.author);
             }
             return _.omit(cBots, channelID);       // Remove cleverbot instance
         }
@@ -53,7 +53,7 @@ commands = {
     ping: {
         desc: 'Responds with pong',
         exec: function(message) {
-            message.channel.sendMessage('Pong');
+            message.channel.send('Pong');
         }
     }
 }
